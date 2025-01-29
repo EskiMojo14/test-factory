@@ -1,0 +1,11 @@
+{
+  "name": "test-factory-bun",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "../dist/bun.cjs",
+  "module": "../dist/bun.js",
+  "types": "../dist/bun.d.ts",
+  "files": [
+    "../dist"
+  ]
+}

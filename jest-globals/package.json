@@ -1,0 +1,11 @@
+{
+  "name": "test-factory-jest-globals",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "../dist/jest-globals.cjs",
+  "module": "../dist/jest-globals.js",
+  "types": "../dist/jest-globals.d.ts",
+  "files": [
+    "../dist"
+  ]
+}

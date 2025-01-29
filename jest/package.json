@@ -1,0 +1,11 @@
+{
+  "name": "test-factory-jest",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "../dist/jest.cjs",
+  "module": "../dist/jest.js",
+  "types": "../dist/jest.d.ts",
+  "files": [
+    "../dist"
+  ]
+}

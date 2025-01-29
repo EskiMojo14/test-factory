@@ -1,0 +1,117 @@
+{
+  "name": "test-factory",
+  "packageManager": "yarn@4.6.0",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./jest": {
+      "import": "./dist/jest.js",
+      "require": "./dist/jest.cjs"
+    },
+    "./jest-globals": {
+      "import": "./dist/jest-globals.js",
+      "require": "./dist/jest-globals.cjs"
+    },
+    "./vitest": {
+      "import": "./dist/vitest.js",
+      "require": "./dist/vitest.cjs"
+    },
+    "./bun": {
+      "import": "./dist/bun.js",
+      "require": "./dist/bun.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "jest",
+    "jest-globals",
+    "vitest",
+    "bun"
+  ],
+  "scripts": {
+    "prepare": "husky",
+    "prebuild": "yarn run type",
+    "build": "tsup",
+    "test": "vitest",
+    "lint": "eslint",
+    "format": "prettier",
+    "pre-commit": "lint-staged",
+    "attw": "attw",
+    "publint": "publint",
+    "type": "tsc",
+    "prepack": "yarn run publint"
+  },
+  "prettier": {},
+  "lint-staged": {
+    "*.{ts,md}": "prettier --write"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts",
+      "src/jest.ts",
+      "src/jest-globals.ts",
+      "src/vitest.ts",
+      "src/bun.ts"
+    ],
+    "sourcemap": true,
+    "format": [
+      "esm",
+      "cjs"
+    ],
+    "dts": true,
+    "external": [
+      "bun:test"
+    ]
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.17.3",
+    "@eslint/js": "^9.19.0",
+    "@jest/globals": "^29.7.0",
+    "@types/bun": "^1",
+    "@typescript-eslint/parser": "^8.22.0",
+    "bun": "^1.2.1",
+    "eslint": "^9.19.0",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import-x": "^4.6.1",
+    "eslint-plugin-vitest": "^0.5.4",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "jiti": "^2.4.2",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.4.2",
+    "publint": "^0.3.2",
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.22.0",
+    "vitest": "^3.0.4"
+  },
+  "peerDependencies": {
+    "bun": "^1",
+    "jest": "^29",
+    "vitest": "^3",
+    "@jest/globals": "^29"
+  },
+  "peerDependenciesMeta": {
+    "bun": {
+      "optional": true
+    },
+    "jest": {
+      "optional": true
+    },
+    "vitest": {
+      "optional": true
+    },
+    "@jest/globals": {
+      "optional": true
+    }
+  }
+}
