@@ -128,6 +128,18 @@ describe("createTestFactory", () => {
 
       expect(describeMock.skip).toHaveBeenCalledWith("desc", expect.anything());
     });
+    it("calls each function provided, with their options", () => {
+      const mock1 = vi.fn(noop);
+      const mock2 = vi.fn(noop);
+      const combined = factory.describe("desc", {
+        mock1,
+        mock2,
+      });
+      combined({ mock1: "foo", mock2: "bar" });
+
+      expect(mock1).toHaveBeenCalledWith("foo");
+      expect(mock2).toHaveBeenCalledWith("bar");
+    });
   });
 
   describe("factory test", () => {
@@ -176,6 +188,17 @@ describe("createTestFactory", () => {
       testFunction("foo");
 
       expect(testMock.todo).toHaveBeenCalledWith("test", undefined, undefined);
+    });
+    it("passes options to original test", () => {
+      const mock = vi.fn(noop);
+      const testFunction = factory.test("test", mock, { timeout: 1000 });
+      testFunction("foo");
+
+      expect(testMock).toHaveBeenCalledWith("test", expect.any(Function), {
+        timeout: 1000,
+      });
+
+      expect(mock).toHaveBeenCalledWith("foo");
     });
   });
 });
