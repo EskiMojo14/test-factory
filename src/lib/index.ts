@@ -13,20 +13,15 @@ import type {
 } from "./types";
 import type { MaybePromise } from "./utils";
 
-const isFactory = <T, Args extends Array<any>>(
-  possibleFactory: MaybeFactory<T, Args>,
-): possibleFactory is (...args: Args) => T =>
-  typeof possibleFactory === "function";
+const isFactory = <T>(
+  possibleFactory: MaybeFactory<T>,
+): possibleFactory is () => T => typeof possibleFactory === "function";
 
-function runTestMap<
-  OptsMap extends UnknownObject,
-  SuiteArgs extends Array<any>,
->(
-  testMap: MaybeFactory<TestMap<OptsMap>, SuiteArgs>,
+function runTestMap<OptsMap extends UnknownObject>(
+  testMap: MaybeFactory<TestMap<OptsMap>>,
   optsMap: OptsMap = {} as never,
-  suiteArgs: SuiteArgs,
 ) {
-  const tests = isFactory(testMap) ? testMap(...suiteArgs) : testMap;
+  const tests = isFactory(testMap) ? testMap() : testMap;
   for (const [key, testFunction] of Object.entries<
     TestFunction<OptsMap[keyof OptsMap]>
   >(tests as never)) {
@@ -34,40 +29,40 @@ function runTestMap<
   }
 }
 
-function wrapDescribe<TestOptions, SuiteArgs extends Array<any>>(
-  describe: TestFactoryOptions<TestOptions, Array<any>, SuiteArgs>["describe"],
-): DescribeFactory<TestOptions, SuiteArgs> {
+function wrapDescribe<TestOptions>(
+  describe: TestFactoryOptions<TestOptions>["describe"],
+): DescribeFactory<TestOptions> {
   return Object.assign(
     function wrappedDescribe(label, testMap, options) {
       return (optsMap) => {
         describe(
           label,
-          (...args) => {
-            runTestMap(testMap, optsMap as never, args);
+          () => {
+            runTestMap(testMap, optsMap as never);
           },
           options,
         );
       };
-    } as DescribeFactoryFn<TestOptions, SuiteArgs>,
+    } as DescribeFactoryFn<TestOptions>,
     {
       skip: ((label, testMap, options) => (optsMap) => {
         describe.skip(
           label,
-          (...args) => {
-            runTestMap(testMap, optsMap as never, args);
+          () => {
+            runTestMap(testMap, optsMap as never);
           },
           options,
         );
-      }) as DescribeFactoryFn<TestOptions, SuiteArgs>,
+      }) as DescribeFactoryFn<TestOptions>,
       only: ((label, testMap, options) => (optsMap) => {
         describe.only(
           label,
-          (...args) => {
-            runTestMap(testMap, optsMap as never, args);
+          () => {
+            runTestMap(testMap, optsMap as never);
           },
           options,
         );
-      }) as DescribeFactoryFn<TestOptions, SuiteArgs>,
+      }) as DescribeFactoryFn<TestOptions>,
       todo:
         <OptsMap extends UnknownObject>(
           label: string,
@@ -78,41 +73,41 @@ function wrapDescribe<TestOptions, SuiteArgs extends Array<any>>(
           const todo = describe.todo ?? describe.skip;
           todo(
             label,
-            (...args) => {
-              if (testMap) runTestMap(testMap, optsMap as never, args);
+            () => {
+              if (testMap) runTestMap(testMap, optsMap as never);
             },
             options,
           );
         },
-    } satisfies Record<keyof DescribeFactory<TestOptions, SuiteArgs>, unknown>,
+    } satisfies Record<keyof DescribeFactory<TestOptions>, unknown>,
   ) as never;
 }
 
-function wrapTest<TestOptions, TestArgs extends Array<any>>(
-  test: TestFactoryOptions<TestOptions, TestArgs, Array<any>>["test"],
-): TestFactory<TestOptions, TestArgs> {
-  const bindOpts = (
-    testFunction: TestFunction<any, MaybePromise<void>, TestArgs>,
+function wrapTest<TestOptions>(
+  test: TestFactoryOptions<TestOptions>["test"],
+): TestFactory<TestOptions> {
+  const bindOpts = <Opts>(
+    testFunction: TestFunction<Opts, MaybePromise<void>>,
     opts: unknown,
-  ) => testFunction.bind(null, opts);
+  ) => testFunction.bind(null, opts as never);
 
   return Object.assign(
     function wrappedTest(label, testFunction, testOptions) {
       return (opts) => {
         test(label, bindOpts(testFunction, opts), testOptions);
       };
-    } as TestFactoryFn<TestOptions, TestArgs>,
+    } as TestFactoryFn<TestOptions>,
     {
       skip: ((label, testFunction, testOptions) => (opts) => {
         test.skip(label, bindOpts(testFunction, opts), testOptions);
-      }) as TestFactoryFn<TestOptions, TestArgs>,
+      }) as TestFactoryFn<TestOptions>,
       only: ((label, testFunction, testOptions) => (opts) => {
         test.only(label, bindOpts(testFunction, opts), testOptions);
-      }) as TestFactoryFn<TestOptions, TestArgs>,
+      }) as TestFactoryFn<TestOptions>,
       todo:
         <Opts>(
           label: string,
-          testFunction?: TestFunction<Opts, MaybePromise<void>, TestArgs>,
+          testFunction?: TestFunction<Opts, MaybePromise<void>>,
           testOptions?: TestOptions,
         ) =>
         (opts: Opts) => {
@@ -122,22 +117,14 @@ function wrapTest<TestOptions, TestArgs extends Array<any>>(
             testOptions,
           );
         },
-    } satisfies Record<keyof TestFactory<TestOptions, TestArgs>, unknown>,
+    } satisfies Record<keyof TestFactory<TestOptions>, unknown>,
   ) as never;
 }
 
-export function createTestFactory<
-  TestOptions,
-  TestArgs extends Array<any>,
-  SuiteArgs extends Array<any>,
->({
+export function createTestFactory<TestOptions>({
   describe,
   test,
-}: TestFactoryOptions<TestOptions, TestArgs, SuiteArgs>): TestFactoryResult<
-  TestOptions,
-  TestArgs,
-  SuiteArgs
-> {
+}: TestFactoryOptions<TestOptions>): TestFactoryResult<TestOptions> {
   const testFactory = wrapTest(test);
   const describeFactory = wrapDescribe(describe);
 
@@ -147,7 +134,7 @@ export function createTestFactory<
     describe: describeFactory,
     suite: describeFactory,
     combine: ((testMap) => (optsMap) => {
-      runTestMap(testMap, optsMap as never, []);
+      runTestMap(testMap, optsMap as never);
     }) as CombineFactory,
   };
 }
