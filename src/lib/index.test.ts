@@ -140,6 +140,18 @@ describe("createTestFactory", () => {
       expect(mock1).toHaveBeenCalledWith("foo");
       expect(mock2).toHaveBeenCalledWith("bar");
     });
+    it("allows a factory function to be provided", () => {
+      const mock1 = vi.fn(noop);
+      const mock2 = vi.fn(noop);
+      const combined = factory.describe("desc", () => ({
+        mock1,
+        mock2,
+      }));
+      combined({ mock1: "foo", mock2: "bar" });
+
+      expect(mock1).toHaveBeenCalledWith("foo");
+      expect(mock2).toHaveBeenCalledWith("bar");
+    });
   });
 
   describe("factory test", () => {

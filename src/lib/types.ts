@@ -34,7 +34,7 @@ export interface TestFactory<TestOptions> extends TestFactoryFn<TestOptions> {
 
 export type DescribeFactoryFn = <OptsMap extends Record<string, unknown>>(
   label: string,
-  testMap: TestMap<OptsMap>,
+  testMap: TestMap<OptsMap> | (() => TestMap<OptsMap>),
 ) => CombinedTestFunction<OptsMap>;
 
 export interface DescribeFactory extends DescribeFactoryFn {

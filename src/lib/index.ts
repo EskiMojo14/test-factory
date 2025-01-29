@@ -9,13 +9,18 @@ import type {
 } from "./types";
 import type { MaybePromise } from "./utils";
 
+const isFactory = <T>(
+  possibleFactory: T | (() => T),
+): possibleFactory is () => T => typeof possibleFactory === "function";
+
 function runTestMap<OptsMap extends Record<string, unknown>>(
-  testMap: TestMap<OptsMap>,
+  testMap: TestMap<OptsMap> | (() => TestMap<OptsMap>),
   optsMap: OptsMap,
 ) {
+  const tests = isFactory(testMap) ? testMap() : testMap;
   for (const [key, testFunction] of Object.entries<
     TestFunction<OptsMap[keyof OptsMap]>
-  >(testMap as never)) {
+  >(tests as never)) {
     testFunction(optsMap[key as keyof OptsMap]);
   }
 }
