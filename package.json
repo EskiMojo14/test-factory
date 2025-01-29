@@ -95,12 +95,15 @@
     "vitest": "^3.0.4"
   },
   "peerDependencies": {
+    "@jest/globals": "^29",
     "bun": "^1",
     "jest": "^29",
-    "vitest": "^3",
-    "@jest/globals": "^29"
+    "vitest": "^3"
   },
   "peerDependenciesMeta": {
+    "@jest/globals": {
+      "optional": true
+    },
     "bun": {
       "optional": true
     },
@@ -108,9 +111,6 @@
       "optional": true
     },
     "vitest": {
-      "optional": true
-    },
-    "@jest/globals": {
       "optional": true
     }
   }

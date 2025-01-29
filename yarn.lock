@@ -5743,6 +5743,20 @@ __metadata:
     typescript: "npm:^5.7.3"
     typescript-eslint: "npm:^8.22.0"
     vitest: "npm:^3.0.4"
+  peerDependencies:
+    "@jest/globals": ^29
+    bun: ^1
+    jest: ^29
+    vitest: ^3
+  peerDependenciesMeta:
+    "@jest/globals":
+      optional: true
+    bun:
+      optional: true
+    jest:
+      optional: true
+    vitest:
+      optional: true
   languageName: unknown
   linkType: soft
 
