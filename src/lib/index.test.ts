@@ -13,6 +13,7 @@ describe("createTestFactory", () => {
   const describeMock = Object.assign(vi.fn(describeImpl), {
     skip: vi.fn<typeof describeImpl>(),
     only: vi.fn(describeImpl),
+    todo: vi.fn<(label: string, testFunction?: TestFunction) => void>(),
   });
   const testImpl = (
     label: string,
@@ -106,6 +107,26 @@ describe("createTestFactory", () => {
       );
 
       expect(mock).toHaveBeenCalledWith("foo");
+    });
+    it("calls original describe.todo from describe.todo", () => {
+      const combined = factory.describe.todo("desc");
+      combined({});
+
+      expect(describeMock.todo).toHaveBeenCalledWith("desc", expect.anything());
+    });
+    it("falls back to describe.skip if describe.todo is not available", () => {
+      const describeMock = Object.assign(vi.fn(describeImpl), {
+        skip: vi.fn<typeof describeImpl>(),
+        only: vi.fn(describeImpl),
+      });
+      const factory = createTestFactory({
+        describe: describeMock,
+        test: testMock,
+      });
+      const combined = factory.describe.todo("desc");
+      combined({});
+
+      expect(describeMock.skip).toHaveBeenCalledWith("desc", expect.anything());
     });
   });
 

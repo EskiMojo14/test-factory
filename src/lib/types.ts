@@ -40,6 +40,10 @@ export type DescribeFactoryFn = <OptsMap extends Record<string, unknown>>(
 export interface DescribeFactory extends DescribeFactoryFn {
   skip: DescribeFactoryFn;
   only: DescribeFactoryFn;
+  todo: <OptsMap extends Record<string, unknown>>(
+    label: string,
+    testMap?: TestMap<OptsMap>,
+  ) => CombinedTestFunction<OptsMap>;
 }
 
 export type CombineFactory = <OptsMap extends Record<string, unknown>>(
@@ -51,6 +55,7 @@ export interface TestFactoryOptions<TestOptions> {
     (label: string, testFunction: () => void): void;
     skip: (label: string, testFunction: () => void) => void;
     only: (label: string, testFunction: () => void) => void;
+    todo?: (label: string, testFunction?: () => void) => void;
   };
   test: {
     (

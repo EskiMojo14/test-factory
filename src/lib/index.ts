@@ -42,6 +42,12 @@ function wrapDescribe(
           runTestMap(testMap, optsMap as never);
         });
       },
+      todo: (label, testMap) => (optsMap) => {
+        const todo = describe.todo ?? describe.skip;
+        todo(label, () => {
+          if (testMap) runTestMap(testMap, optsMap as never);
+        });
+      },
     } satisfies Omit<DescribeFactory, "">,
   );
 }
