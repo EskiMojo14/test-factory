@@ -49,6 +49,9 @@ describe("createTestFactory", () => {
   it("aliases test and it", () => {
     expect(factory.test).toBe(factory.it);
   });
+  it("aliases describe and suite", () => {
+    expect(factory.describe).toBe(factory.suite);
+  });
 
   describe("combine", () => {
     it("calls all functions provided, with their options", () => {
