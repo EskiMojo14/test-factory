@@ -1,5 +1,5 @@
 {
-  "name": "test-factory",
+  "name": "create-test-factory",
   "packageManager": "yarn@4.6.0",
   "version": "1.0.0",
   "type": "module",
