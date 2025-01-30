@@ -6,7 +6,7 @@ export type TestCollectorOptions = NonNullable<
   Parameters<typeof vitestTest>[1]
 >;
 
-const reverseViteOptions = reverseOptionOrder<TestCollectorOptions, []>;
+const reverseViteOptions = reverseOptionOrder<TestCollectorOptions>;
 
 export const { test, it, describe, combine } = createTestFactory({
   describe: Object.assign(reverseViteOptions(vitestDescribe), {
