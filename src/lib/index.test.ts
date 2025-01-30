@@ -7,19 +7,33 @@ function noop() {
 }
 
 describe("createTestFactory", () => {
-  const describeImpl = (label: string, testFunction: TestFunction) => {
+  interface TestOptions {
+    timeout?: number;
+  }
+  const describeImpl = (
+    label: string,
+    testFunction: TestFunction,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    options?: TestOptions,
+  ) => {
     testFunction();
   };
   const describeMock = Object.assign(vi.fn(describeImpl), {
     skip: vi.fn<typeof describeImpl>(),
     only: vi.fn(describeImpl),
-    todo: vi.fn<(label: string, testFunction?: TestFunction) => void>(),
+    todo: vi.fn<
+      (
+        label: string,
+        testFunction?: TestFunction,
+        options?: TestOptions,
+      ) => void
+    >(),
   });
   const testImpl = (
     label: string,
     testFunction: TestFunction,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    testOptions?: { timeout?: number },
+    testOptions?: TestOptions,
   ) => {
     testFunction();
   };
@@ -30,9 +44,7 @@ describe("createTestFactory", () => {
       (
         label: string,
         testFunction?: TestFunction,
-        testOptions?: {
-          timeout?: number;
-        },
+        testOptions?: TestOptions,
       ) => void
     >(),
   });
