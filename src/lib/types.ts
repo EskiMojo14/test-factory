@@ -62,48 +62,42 @@ export type CombineFactory = <OptsMap extends UnknownObject>(
   testMap: TestMap<OptsMap>,
 ) => CombinedTestFunction<OptsMap>;
 
+type InputDescribeFn<TestOptions> = (
+  label: string,
+  testFunction: () => void,
+  options?: TestOptions,
+) => void;
+
+interface InputDescribe<TestOptions> extends InputDescribeFn<TestOptions> {
+  skip: InputDescribeFn<TestOptions>;
+  only: InputDescribeFn<TestOptions>;
+  // optional because jest doesn't have a todo for describe
+  todo?: (
+    label: string,
+    testFunction?: () => void,
+    options?: TestOptions,
+  ) => void;
+}
+
+type InputTestFn<TestOptions> = (
+  label: string,
+  testFunction: (() => void) | (() => Promise<void>),
+  options?: TestOptions,
+) => void;
+
+interface InputTest<TestOptions> extends InputTestFn<TestOptions> {
+  skip: InputTestFn<TestOptions>;
+  only: InputTestFn<TestOptions>;
+  todo: (
+    label: string,
+    testFunction?: (() => void) | (() => Promise<void>),
+    options?: TestOptions,
+  ) => void;
+}
+
 export interface TestFactoryOptions<TestOptions> {
-  describe: {
-    (label: string, testFunction: () => void, options?: TestOptions): void;
-    skip: (
-      label: string,
-      testFunction: () => void,
-      options?: TestOptions,
-    ) => void;
-    only: (
-      label: string,
-      testFunction: () => void,
-      options?: TestOptions,
-    ) => void;
-    // jest doesn't have a todo for describe
-    todo?: (
-      label: string,
-      testFunction?: () => void,
-      options?: TestOptions,
-    ) => void;
-  };
-  test: {
-    (
-      label: string,
-      testFunction: (() => void) | (() => Promise<void>),
-      testOptions?: TestOptions,
-    ): void;
-    skip: (
-      label: string,
-      testFunction: (() => void) | (() => Promise<void>),
-      testOptions?: TestOptions,
-    ) => void;
-    only: (
-      label: string,
-      testFunction: (() => void) | (() => Promise<void>),
-      testOptions?: TestOptions,
-    ) => void;
-    todo: (
-      label: string,
-      testFunction?: (() => void) | (() => Promise<void>),
-      testOptions?: TestOptions,
-    ) => void;
-  };
+  describe: InputDescribe<TestOptions>;
+  test: InputTest<TestOptions>;
 }
 
 export interface TestFactoryResult<TestOptions> {
