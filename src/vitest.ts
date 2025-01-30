@@ -12,11 +12,11 @@ export const { test, it, describe, combine } = createTestFactory({
   describe: Object.assign(reverseViteOptions(vitestDescribe), {
     skip: reverseViteOptions(vitestDescribe.skip),
     only: reverseViteOptions(vitestDescribe.only),
-    todo: reverseViteOptions(vitestDescribe.todo) as never,
+    todo: reverseViteOptions(vitestDescribe.todo),
   }),
   test: Object.assign(reverseViteOptions(vitestTest), {
     skip: reverseViteOptions(vitestTest.skip),
     only: reverseViteOptions(vitestTest.only),
-    todo: reverseViteOptions(vitestTest.todo) as never,
+    todo: reverseViteOptions(vitestTest.todo),
   }),
 });
