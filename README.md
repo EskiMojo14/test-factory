@@ -101,6 +101,21 @@ standardSchemaSuite({
 
 _Also supports `skip`, `only`, and `todo` - if `todo` is not available, it will fall back to `skip`_
 
+If any setup is needed, you can pass a function which returns a map of test functions.
+
+```ts
+const standardSchemSuite = describe("standardSchemaProps", () => ({
+  itHasStandardProps,
+  itReturnsValidationResult,
+  // ...
+}));
+
+standardSchemaSuite({
+  itHasStandardProps: schema,
+  itReturnsValidationResult: schema,
+});
+```
+
 ### `combine`
 
 Receives a map of test functions, and returns a function which will call each test function with the provided options.
