@@ -5,7 +5,13 @@ import type {
   UndefinedOptional,
 } from "./utils";
 
-export type MaybeFactory<T> = T | (() => T);
+export type Factory<T, FactoryArgs extends UnknownObject> = (
+  args: FactoryArgs,
+) => T;
+
+export type MaybeFactory<T, FactoryArgs extends UnknownObject> =
+  | T
+  | Factory<T, FactoryArgs>;
 
 export type TestFunction<Opts = void, Return = void> = (
   ...args: IfPossiblyUndefined<Opts, [opts?: Opts], [opts: Opts]>
@@ -41,21 +47,34 @@ export interface TestFactory<TestOptions> extends TestFactoryFn<TestOptions> {
   ) => TestFunction<Opts>;
 }
 
-export type DescribeFactoryFn<TestOptions> = <OptsMap extends UnknownObject>(
+export type DescribeFactoryFn<TestOptions> = <
+  OptsMap extends UnknownObject,
+  DescribeOpts extends UnknownObject = {},
+>(
   label: string,
-  testMap: MaybeFactory<TestMap<OptsMap>>,
+  testMap: MaybeFactory<
+    TestMap<OptsMap>,
+    {
+      [K in keyof DescribeOpts]: K extends keyof OptsMap
+        ? DescribeOpts[K] & OptsMap[K]
+        : DescribeOpts[K];
+    }
+  >,
   testOptions?: TestOptions,
-) => CombinedTestFunction<OptsMap>;
+) => CombinedTestFunction<OptsMap & DescribeOpts>;
 
 export interface DescribeFactory<TestOptions>
   extends DescribeFactoryFn<TestOptions> {
   skip: DescribeFactoryFn<TestOptions>;
   only: DescribeFactoryFn<TestOptions>;
-  todo: <OptsMap extends UnknownObject>(
+  todo: <
+    OptsMap extends UnknownObject,
+    DescribeOpts extends UnknownObject = {},
+  >(
     label: string,
-    testMap?: MaybeFactory<TestMap<OptsMap>>,
+    testMap?: MaybeFactory<TestMap<OptsMap>, DescribeOpts>,
     testOptions?: TestOptions,
-  ) => CombinedTestFunction<OptsMap>;
+  ) => CombinedTestFunction<OptsMap & DescribeOpts>;
 }
 
 export type CombineFactory = <OptsMap extends UnknownObject>(

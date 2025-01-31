@@ -10,18 +10,23 @@ import type {
   CombineFactory,
   MaybeFactory,
   TestFactoryFn,
+  Factory,
 } from "./types";
 import type { MaybePromise } from "./utils";
 
-const isFactory = <T>(
-  possibleFactory: MaybeFactory<T>,
-): possibleFactory is () => T => typeof possibleFactory === "function";
+const isFactory = <T, FactoryArgs extends UnknownObject>(
+  possibleFactory: MaybeFactory<T, FactoryArgs>,
+): possibleFactory is Factory<T, FactoryArgs> =>
+  typeof possibleFactory === "function";
 
-function runTestMap<OptsMap extends UnknownObject>(
-  testMap: MaybeFactory<TestMap<OptsMap>>,
-  optsMap: OptsMap = {} as never,
+function runTestMap<
+  OptsMap extends UnknownObject,
+  DescribeOpts extends UnknownObject = never,
+>(
+  testMap: MaybeFactory<TestMap<OptsMap>, DescribeOpts>,
+  optsMap: OptsMap & DescribeOpts = {} as never,
 ) {
-  const tests = isFactory(testMap) ? testMap() : testMap;
+  const tests = isFactory(testMap) ? testMap(optsMap) : testMap;
   for (const [key, testFunction] of Object.entries<
     TestFunction<OptsMap[keyof OptsMap]>
   >(tests as never)) {

@@ -89,7 +89,11 @@ describe("createTestFactory", () => {
 
       combined({ mock: "foo" });
 
-      expect(describeMock).toHaveBeenCalledWith("desc", expect.any(Function));
+      expect(describeMock).toHaveBeenCalledWith(
+        "desc",
+        expect.any(Function),
+        undefined,
+      );
 
       expect(mock).toHaveBeenCalledWith("foo");
     });
@@ -104,6 +108,7 @@ describe("createTestFactory", () => {
       expect(describeMock.skip).toHaveBeenCalledWith(
         "desc",
         expect.any(Function),
+        undefined,
       );
 
       expect(mock).not.toHaveBeenCalled();
@@ -119,6 +124,7 @@ describe("createTestFactory", () => {
       expect(describeMock.only).toHaveBeenCalledWith(
         "desc",
         expect.any(Function),
+        undefined,
       );
 
       expect(mock).toHaveBeenCalledWith("foo");
@@ -127,7 +133,11 @@ describe("createTestFactory", () => {
       const combined = factory.describe.todo("desc");
       combined({});
 
-      expect(describeMock.todo).toHaveBeenCalledWith("desc", expect.anything());
+      expect(describeMock.todo).toHaveBeenCalledWith(
+        "desc",
+        expect.anything(),
+        undefined,
+      );
     });
     it("falls back to describe.skip if describe.todo is not available", () => {
       const describeMock = Object.assign(vi.fn(describeImpl), {
@@ -141,7 +151,11 @@ describe("createTestFactory", () => {
       const combined = factory.describe.todo("desc");
       combined({});
 
-      expect(describeMock.skip).toHaveBeenCalledWith("desc", expect.anything());
+      expect(describeMock.skip).toHaveBeenCalledWith(
+        "desc",
+        expect.anything(),
+        undefined,
+      );
     });
     it("calls each function provided, with their options", () => {
       const mock1 = vi.fn(noop);
@@ -166,6 +180,24 @@ describe("createTestFactory", () => {
 
       expect(mock1).toHaveBeenCalledWith("foo");
       expect(mock2).toHaveBeenCalledWith("bar");
+    });
+    it("passes options to factory function", () => {
+      const mock1 = vi.fn(noop);
+      const mock2 = vi.fn(noop);
+      const mock3 = vi.fn(() => ({
+        mock1,
+        mock2,
+      }));
+      const combined = factory.describe("desc", mock3);
+      combined({ mock1: "foo", mock2: "bar", opt: "baz" });
+
+      expect(mock1).toHaveBeenCalledWith("foo");
+      expect(mock2).toHaveBeenCalledWith("bar");
+      expect(mock3).toHaveBeenCalledWith({
+        mock1: "foo",
+        mock2: "bar",
+        opt: "baz",
+      });
     });
   });
 
