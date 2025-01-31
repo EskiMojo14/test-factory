@@ -80,6 +80,8 @@ const itHasStandardProps = it(
 itHasStandardProps(schema);
 ```
 
+_Also supports `skip`, `only`, and `todo`_
+
 #### `describe`/`suite`
 
 Receives a map of test functions, and returns a function which will call each test function with the provided options, inside of a describe block.
@@ -96,6 +98,8 @@ standardSchemaSuite({
   itReturnsValidationResult: schema,
 });
 ```
+
+_Also supports `skip`, `only`, and `todo` - if `todo` is not available, it will fall back to `skip`_
 
 ### `combine`
 
