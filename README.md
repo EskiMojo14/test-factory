@@ -12,24 +12,28 @@ export const standardSchemaSuite = describe("standard schema suite", {
   exposesProps:
     it("exposes standard schema props", (schema: StandardSchemaV1) => {
       expect(schema).toHaveProperty("~standard");
-      const standardProps = schema["~standard"];
-      expect(standardProps).toEqual({
+      expect(schema["~standard"]).toEqual({
         version: 1,
         vendor: expect.any(String),
         validate: expect.any(Function),
       });
     }),
-  validationResult:
-    it("returns validation result", (schema: StandardSchemaV1<string>) => {
-      expect(schema["~standard"].validate("test")).toMatchObject({
-        value: "test",
-      });
-      expect(schema["~standard"].validate(123)).toMatchObject({
-        issues: [
-          expect.objectContaining({ message: expect.any(String), path: [] }),
-        ],
-      });
-    }),
+  validationResult: describe("validation result", {
+    validResult:
+      it("returns validation result", (schema: StandardSchemaV1<string>) => {
+        expect(schema["~standard"].validate("test")).toMatchObject({
+          value: "test",
+        });
+      }),
+    invalidResult:
+      it("returns invalid result", (schema: StandardSchemaV1<string>) => {
+        expect(schema["~standard"].validate(123)).toMatchObject({
+          issues: [
+            expect.objectContaining({ message: expect.any(String), path: [] }),
+          ],
+        });
+      }),
+  }),
 });
 
 // zod.ts
@@ -37,7 +41,10 @@ import { z } from "zod";
 import { standardSchemaSuite } from "./base";
 standardSchemaSuite({
   exposesProps: z.number(),
-  validationResult: z.string(),
+  validationResult: {
+    validResult: z.string(),
+    invalidResult: z.string(),
+  },
 });
 
 // valibot.ts
@@ -45,7 +52,10 @@ import * as v from "valibot";
 import { standardSchemaSuite } from "./base";
 standardSchemaSuite({
   exposesProps: v.number(),
-  validationResult: v.string(),
+  validationResult: {
+    validResult: v.string(),
+    invalidResult: v.string(),
+  },
 });
 ```
 
@@ -72,6 +82,11 @@ const itHasStandardProps = it(
   "has standard props",
   (schema: StandardSchemaV1) => {
     expect(schema).toHaveProperty("~standard");
+    expect(schema["~standard"]).toEqual({
+      version: 1,
+      vendor: expect.any(String),
+      validate: expect.any(Function),
+    });
   },
   { timeout: 1000 },
 );
