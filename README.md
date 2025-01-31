@@ -87,7 +87,7 @@ _Also supports `skip`, `only`, and `todo`_
 Receives a map of test functions, and returns a function which will call each test function with the provided options, inside of a describe block.
 
 ```ts
-const standardSchemaSuite = describe("standardSchemaProps", {
+const standardSchemaSuite = describe("standard schema suite", {
   itHasStandardProps,
   itReturnsValidationResult,
   // ...
@@ -104,7 +104,7 @@ _Also supports `skip`, `only`, and `todo` - if `todo` is not available, it will 
 If any setup is needed, you can pass a function which returns a map of test functions.
 
 ```ts
-const standardSchemaSuite = describe("standardSchemaProps", () => ({
+const standardSchemaSuite = describe("standard schema suite", () => ({
   itHasStandardProps,
   itReturnsValidationResult,
   // ...
@@ -113,6 +113,26 @@ const standardSchemaSuite = describe("standardSchemaProps", () => ({
 standardSchemaSuite({
   itHasStandardProps: schema,
   itReturnsValidationResult: schema,
+});
+```
+
+Describe functions can also be nested:
+
+```ts
+const standardSchemaSuite = describe("standard schema suite", {
+  itHasStandardProps,
+  itReturnsValidationResult: describe("validation result", {
+    itReturnsValidResult,
+    itReturnsInvalidResult,
+  }),
+});
+
+standardSchemaSuite({
+  itHasStandardProps: schema,
+  itReturnsValidationResult: {
+    itReturnsValidResult: schema,
+    itReturnsInvalidResult: schema,
+  },
 });
 ```
 
