@@ -151,6 +151,35 @@ standardSchemaSuite({
 });
 ```
 
+Factory functions can also accept an options object, which will be merged with the options for each test function.
+
+```ts
+const itReturnsValidationResult = describe("validation result", ({
+  schema,
+}: {
+  schema: StandardSchemaV1<string>;
+}) => ({
+  itReturnsValidResult: it("returns valid result", () => {
+    expect(schema["~standard"].validate("test")).toMatchObject({
+      value: "test",
+    });
+  }),
+  itReturnsInvalidResult: it("returns invalid result", () => {
+    expect(schema["~standard"].validate(123)).toMatchObject({
+      issues: [
+        expect.objectContaining({ message: expect.any(String), path: [] }),
+      ],
+    });
+  }),
+}));
+
+itReturnsValidationResult({
+  schema,
+  // options for itReturnsValidResult and itReturnsInvalidResult are optional
+  // because they're not specified (or allow undefined)
+});
+```
+
 ### `combine`
 
 Receives a map of test functions, and returns a function which will call each test function with the provided options.
