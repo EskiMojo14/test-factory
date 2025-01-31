@@ -140,11 +140,14 @@ standardSchemaSuite({
 For other test runners, you can create your own factory function. The `createTestFactory` function takes a `describe(label, testFunction, options?)` and a `test(label, testFunction, options?)` function, and returns a factory function with the same API as the prebuilt entry points.
 
 ```ts
-import { describe, test } from "my-test-runner";
+import {
+  describe as originalDescribe,
+  test as originalTest,
+} from "my-test-runner";
 import { createTestFactory } from "create-test-factory";
 
-const { test, it, describe, suite } = createTestFactory({
-  describe,
-  test,
+export const { test, it, describe, suite } = createTestFactory({
+  describe: originalDescribe,
+  test: originalTest,
 });
 ```
