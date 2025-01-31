@@ -8,7 +8,7 @@ export type TestCollectorOptions = NonNullable<
 
 const reverseViteOptions = reverseOptionOrder<TestCollectorOptions>;
 
-export const { test, it, describe, suite, combine } = createTestFactory({
+export const { test, it, describe, suite } = createTestFactory({
   describe: Object.assign(reverseViteOptions(vitestDescribe), {
     skip: reverseViteOptions(vitestDescribe.skip),
     only: reverseViteOptions(vitestDescribe.only),
@@ -20,3 +20,5 @@ export const { test, it, describe, suite, combine } = createTestFactory({
     todo: reverseViteOptions(vitestTest.todo),
   }),
 });
+
+export { combine } from ".";

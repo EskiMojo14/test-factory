@@ -133,8 +133,9 @@ export function createTestFactory<TestOptions>({
     it: testFactory,
     describe: describeFactory,
     suite: describeFactory,
-    combine: ((testMap) => (optsMap) => {
-      runTestMap(testMap, optsMap as never);
-    }) as CombineFactory,
   };
 }
+
+export const combine = ((testMap) => (optsMap) => {
+  runTestMap(testMap, optsMap as never);
+}) as CombineFactory;

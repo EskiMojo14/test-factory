@@ -49,11 +49,83 @@ standardSchemaSuite({
 });
 ```
 
-Prebuilt entry points:
+Factory function is exported from `create-test-factory` entry point, for use with other test runners.
 
-- `create-test-factory/jest`
-- `create-test-factory/jest-globals`
+## API Reference
+
+### Prebuilt entry points
+
+For convenience, prebuilt entry points are provided for the following test runners:
+
+- `create-test-factory/jest` (if you use jest with globals)
+- `create-test-factory/jest-globals` (if you import from `@jest/globals`)
 - `create-test-factory/vitest`
 - `create-test-factory/bun`
 
-Factory function is exported from `create-test-factory` entry point, for use with other test runners.
+#### `test`/`it`
+
+Creates a function which will call the test runner's original `test` function, with the provided options.
+
+```ts
+// hasn't asserted anything yet
+const itHasStandardProps = it(
+  "has standard props",
+  (schema: StandardSchemaV1) => {
+    expect(schema).toHaveProperty("~standard");
+  },
+  { timeout: 1000 },
+);
+
+// now it has
+itHasStandardProps(schema);
+```
+
+#### `describe`/`suite`
+
+Receives a map of test functions, and returns a function which will call each test function with the provided options, inside of a describe block.
+
+```ts
+const standardSchemSuite = describe("standardSchemaProps", {
+  itHasStandardProps,
+  itReturnsValidationResult,
+  // ...
+});
+
+standardSchemaSuite({
+  itHasStandardProps: schema,
+  itReturnsValidationResult: schema,
+});
+```
+
+### `combine`
+
+Receives a map of test functions, and returns a function which will call each test function with the provided options.
+
+_Also re-exported from prebuilt entry points._
+
+```ts
+const standardSchemSuite = combine({
+  itHasStandardProps,
+  itReturnsValidationResult,
+  // ...
+});
+
+standardSchemaSuite({
+  itHasStandardProps: schema,
+  itReturnsValidationResult: schema,
+});
+```
+
+### `createTestFactory`
+
+For other test runners, you can create your own factory function. The `createTestFactory` function takes a `describe(label, testFunction, options?)` and a `test(label, testFunction, options?)` function, and returns a factory function with the same API as the prebuilt entry points.
+
+```ts
+import { describe, test } from "my-test-runner";
+import { createTestFactory } from "create-test-factory";
+
+const { test, it, describe, suite } = createTestFactory({
+  describe,
+  test,
+});
+```

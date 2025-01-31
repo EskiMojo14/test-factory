@@ -9,7 +9,9 @@ if (!jestDescribe || !jestTest) {
   throw new Error("Jest globals not found");
 }
 
-export const { test, it, describe, suite, combine } = createTestFactory({
+export const { test, it, describe, suite } = createTestFactory({
   describe: jestDescribe,
   test: jestTest,
 });
+
+export { combine } from ".";

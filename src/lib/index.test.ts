@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TestFunction } from "./types";
-import { createTestFactory } from ".";
+import { createTestFactory, combine } from ".";
 
 function noop() {
   // noop
@@ -69,7 +69,7 @@ describe("createTestFactory", () => {
     it("calls all functions provided, with their options", () => {
       const mock1 = vi.fn(noop);
       const mock2 = vi.fn(noop);
-      const combined = factory.combine({
+      const combined = combine({
         mock1,
         mock2,
       });

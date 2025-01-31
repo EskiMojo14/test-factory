@@ -8,4 +8,4 @@ export type {
   TestFunction,
   TestMap,
 } from "./lib/types";
-export { createTestFactory } from "./lib";
+export { createTestFactory, combine } from "./lib";

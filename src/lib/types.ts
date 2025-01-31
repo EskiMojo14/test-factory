@@ -105,5 +105,4 @@ export interface TestFactoryResult<TestOptions> {
   it: TestFactory<TestOptions>;
   describe: DescribeFactory<TestOptions>;
   suite: DescribeFactory<TestOptions>;
-  combine: CombineFactory;
 }
