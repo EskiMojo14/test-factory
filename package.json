@@ -1,6 +1,6 @@
 {
   "name": "create-test-factory",
-  "packageManager": "yarn@4.6.0",
+  "packageManager": "pnpm@10.5.2+sha256.79a98daa90248b50815e31460790f118c56fe099113370826caa0153be6daba5",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -38,7 +38,7 @@
   ],
   "scripts": {
     "prepare": "husky",
-    "prebuild": "yarn run type",
+    "prebuild": "pnpm run type",
     "build": "tsup",
     "test": "vitest",
     "lint": "eslint",
@@ -47,7 +47,7 @@
     "attw": "attw",
     "publint": "publint",
     "type": "tsc",
-    "prepack": "yarn run publint"
+    "prepack": "pnpm run publint"
   },
   "prettier": {},
   "lint-staged": {
