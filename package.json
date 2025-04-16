@@ -39,7 +39,7 @@
   "scripts": {
     "prepare": "husky",
     "prebuild": "pnpm run type",
-    "build": "tsup",
+    "build": "tsdown",
     "test": "vitest",
     "lint": "eslint",
     "format": "prettier",
@@ -53,7 +53,7 @@
   "lint-staged": {
     "*.{ts,md}": "prettier --write"
   },
-  "tsup": {
+  "tsdown": {
     "entry": [
       "src/index.ts",
       "src/jest.ts",
@@ -89,7 +89,7 @@
     "lint-staged": "^15.4.3",
     "prettier": "^3.4.2",
     "publint": "^0.3.2",
-    "tsup": "^8.3.6",
+    "tsdown": "^0.6.10",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.22.0",
     "vitest": "^3.0.4"

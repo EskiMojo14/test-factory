@@ -1,5 +1,6 @@
 import { describe as vitestDescribe, test as vitestTest } from "vitest";
 import { reverseOptionOrder } from "./lib/utils";
+import type { DescribeFactory, TestFactory } from ".";
 import { createTestFactory } from ".";
 
 export type TestCollectorOptions = NonNullable<
@@ -8,7 +9,7 @@ export type TestCollectorOptions = NonNullable<
 
 const reverseViteOptions = reverseOptionOrder<TestCollectorOptions>;
 
-export const { test, it, describe, suite } = createTestFactory({
+const res = createTestFactory({
   describe: Object.assign(reverseViteOptions(vitestDescribe), {
     skip: reverseViteOptions(vitestDescribe.skip),
     only: reverseViteOptions(vitestDescribe.only),
@@ -20,5 +21,9 @@ export const { test, it, describe, suite } = createTestFactory({
     todo: reverseViteOptions(vitestTest.todo),
   }),
 });
+export const test: TestFactory<TestCollectorOptions> = res.test;
+export const it: TestFactory<TestCollectorOptions> = res.it;
+export const describe: DescribeFactory<TestCollectorOptions> = res.describe;
+export const suite: DescribeFactory<TestCollectorOptions> = res.suite;
 
 export { combine } from ".";
